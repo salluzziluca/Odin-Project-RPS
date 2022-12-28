@@ -40,54 +40,38 @@ function playRound(playerSelection, computerSelection, puntosJugador, puntosMaqu
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Rock, paper or scissors?").toLowerCase();
-        let computerSelection = computerPlay();
-        let result = playRound(playerSelection, computerSelection);
-        console.log(result);
-        if (result.includes("win")) {
-            playerScore++;
-        } else if (result.includes("lose")) {
-            computerScore++;
-        }
-    }
-    if (playerScore > computerScore) {
-        console.log("You win the game!");
-    } else if (playerScore < computerScore) {
-        console.log("You lose the game!");
-    } else {
-        console.log("It's a tie!");
-    }
-}
-
 const resultado = document.querySelector('#resultado');
 const ganador = document.querySelector('#ganador');
 const puntos = document.querySelector('#puntos');
 const buttons = document.querySelectorAll('.button');
+let puntosJugador = 0; //TODO: Ver por que no se resetean estos valores cuando recargo la pagina
+let puntosMaquina = 0;
 buttons.forEach(button => button.addEventListener('click', function (e) {
-    let puntosJugador = 0; //TODO: Ver por que no se resetean estos valores cuando recargo la pagina
-    let puntosMaquina = 0;
     let hayGanador = false;
-    while (!hayGanador) {
-        console.log(button.id);
-        let ronda = playRound(button.id, computerPlay(), puntosJugador, puntosMaquina);
-        let result = ronda[0];
-        puntosJugador = ronda[1];
-        puntosMaquina = ronda[2];
-        resultado.textContent = result;
-        puntos.textContent = "Puntos: " + puntosJugador + " - " + puntosMaquina;
-        if (puntosJugador == 5) {
-            hayGanador = true;
-            ganador.textContent = "Ganaste pibe";
-        } else if (puntosMaquina == 5) {
-            hayGanador = true;
-            ganador.textContent = "Te ganó la máquina";
-        }
+    console.log(button.id);
+    let ronda = playRound(button.id, computerPlay(), puntosJugador, puntosMaquina);
+    let result = ronda[0];
+    puntosJugador = ronda[1];
+    puntosMaquina = ronda[2];
+    resultado.textContent = result;
+    puntos.textContent = "Puntos: " + puntosJugador + " - " + puntosMaquina;
+    if (puntosJugador == 5) {
+        disableAllButtons();
+        ganador.textContent = "Ganaste pibe";
+        puntosJugador = 0;
+        puntosMaquina = 0;
+    } else if (puntosMaquina == 5) {
+        disableAllButtons();
+        ganador.textContent = "Te ganó la máquina";
+        puntosJugador = 0;
+        puntosMaquina = 0;
     }
+
 }));
+
+function disableAllButtons() {
+    buttons.forEach(button => button.disabled = true);
+}
 
 
 
