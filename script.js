@@ -10,52 +10,68 @@ function computerPlay() {
         return "scissors";
     }
 }
-
-function playRound(playerSelection, computerSelection) {
+function playRound(playerSelection, computerSelection, puntosJugador, puntosMaquina) {
     if (playerSelection == computerSelection) {
-        return "It's a tie!";
+        return ["It's a tie!", puntosJugador, puntosMaquina];
     } else if (playerSelection == "rock") {
         if (computerSelection == "paper") {
-            return "You lose! Paper beats rock";
+            puntosMaquina++;
+            return ["You lose! Paper beats rock", puntosJugador, puntosMaquina];
         } else {
-            return "You win! Rock beats scissors";
+            puntosJugador++;
+            return ["You win! Rock beats scissors", puntosJugador, puntosMaquina];
         }
     } else if (playerSelection == "paper") {
         if (computerSelection == "scissors") {
-            return "You lose! Scissors beats paper";
+            puntosMaquina++;
+            return ["You lose! Scissors beats paper", puntosJugador, puntosMaquina];
         } else {
-            return "You win! Paper beats rock";
+            puntosJugador++;
+            return ["You win! Paper beats rock", puntosJugador, puntosMaquina];
         }
     } else if (playerSelection == "scissors") {
         if (computerSelection == "rock") {
-            return "You lose! Rock beats scissors";
+            puntosMaquina++;
+            return ["You lose! Rock beats scissors", puntosJugador, puntosMaquina];
         } else {
-            return "You win! Scissors beats paper";
+            puntosJugador++;
+            return ["You win! Scissors beats paper", puntosJugador, puntosMaquina];
         }
     }
 }
 
-function game() {
-    let playerScore = 0;
-    let computerScore = 0;
-    for (let i = 0; i < 5; i++) {
-        let playerSelection = prompt("Rock, paper or scissors?").toLowerCase();
-        let computerSelection = computerPlay();
-        let result = playRound(playerSelection, computerSelection);
-        console.log(result);
-        if (result.includes("win")) {
-            playerScore++;
-        } else if (result.includes("lose")) {
-            computerScore++;
-        }
+const resultado = document.querySelector('#resultado');
+const ganador = document.querySelector('#ganador');
+const puntos = document.querySelector('#puntos');
+const buttons = document.querySelectorAll('.button');
+let puntosJugador = 0; //TODO: Ver por que no se resetean estos valores cuando recargo la pagina
+let puntosMaquina = 0;
+buttons.forEach(button => button.addEventListener('click', function (e) {
+    let hayGanador = false;
+    console.log(button.id);
+    let ronda = playRound(button.id, computerPlay(), puntosJugador, puntosMaquina);
+    let result = ronda[0];
+    puntosJugador = ronda[1];
+    puntosMaquina = ronda[2];
+    resultado.textContent = result;
+    puntos.textContent = "Puntos: " + puntosJugador + " - " + puntosMaquina;
+    if (puntosJugador == 5) {
+        disableAllButtons();
+        ganador.textContent = "Ganaste pibe";
+        puntosJugador = 0;
+        puntosMaquina = 0;
+    } else if (puntosMaquina == 5) {
+        disableAllButtons();
+        ganador.textContent = "Te ganó la máquina";
+        puntosJugador = 0;
+        puntosMaquina = 0;
     }
-    if (playerScore > computerScore) {
-        console.log("You win the game!");
-    } else if (playerScore < computerScore) {
-        console.log("You lose the game!");
-    } else {
-        console.log("It's a tie!");
-    }
+
+}));
+
+function disableAllButtons() {
+    buttons.forEach(button => button.disabled = true);
 }
+
 
 
